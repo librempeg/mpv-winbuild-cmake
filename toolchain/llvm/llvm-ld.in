@@ -5,9 +5,14 @@ FLAGS="-m @ld_m_flag@"
 FLAGS="$FLAGS @opt@"
 FLAGS="$FLAGS --pdb="
 FLAGS="$FLAGS -O3 -Xlink=-opt:lldlto=3 -Xlink=-opt:lldltocgo=3"
+SECTION="--gc-sections -Xlink=-opt:safeicf"
 
 if [ "$CONF" == "1" ]; then
     SKIP_OPT="-O0 -Xlink=-opt:lldlto=0 -Xlink=-opt:lldltocgo=0 --no-gc-sections --no-guard-cf"
 fi
 
-"$PROG" "$@" $FLAGS @LLD_FLAGS@ $SKIP_OPT
+if [ "$NO_SECTION" == "1" ]; then
+    unset SECTION
+fi
+
+"$PROG" "$@" $FLAGS @LLD_FLAGS@ $SECTION $SKIP_OPT

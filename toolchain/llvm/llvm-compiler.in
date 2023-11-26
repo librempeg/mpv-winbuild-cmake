@@ -7,9 +7,14 @@ FLAGS="$FLAGS -fuse-ld=lld --ld-path=@TARGET_ARCH@-ld"
 FLAGS="$FLAGS @cfi@ @opt@"
 FLAGS="$FLAGS -gcodeview"
 FLAGS="$FLAGS -Wno-unused-command-line-argument"
+SECTION="-fdata-sections -ffunction-sections"
 
 if [ "$CONF" == "1" ]; then
     SKIP_OPT="-O0 -fno-lto"
 fi
 
-"$PROG" "$@" $FLAGS @CLANG_FLAGS@ @linker@ $SKIP_OPT
+if [ "$NO_SECTION" == "1" ]; then
+    unset SECTION
+fi
+
+"$PROG" "$@" $FLAGS @CLANG_FLAGS@ @linker@ $SECTION $SKIP_OPT
